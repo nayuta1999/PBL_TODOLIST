@@ -12,7 +12,6 @@
         public function init(){
             try{
                 $this->pdo = new PDO($this->dsn,$this->user,$this->pass);  
-                
                 /*
                     テーブルの内容
                 */
@@ -34,8 +33,28 @@
                 die;
             }
         }
+        /*
+            TODOに要素を追加する．
+        */
         public function TODO_insert($Todo,$Need_period,$Priority_number){//データベースにinsert
-            
+            $date=date('Y-m-d H:i:s');
+            $sql = "INSERT INTO todo (
+                user_table,user,todo,finish_check,need_period,priority_number,registry_datetime
+            ) VALUES (
+                :user_table,:user,:todo,:finish_check,:need_period,:priority_number,:registry_datetime
+            )";
+            //var_dump($sql);die;
+            $stmt = $this->pdo->prepare($sql);
+            $params=[
+                ':user_table' => 1,
+                ':user' => 1,
+                ':todo' => $Todo,
+                ':finish_check' => 0,
+                ':need_period' => $Need_period,
+                ':priority_number' => $Priority_number,
+                ':registry_datetime' => $date,
+            ];
+            $stmt->execute($params);
         }
     }
 ?>
