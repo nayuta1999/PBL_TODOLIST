@@ -36,7 +36,7 @@
         /*
             TODOに要素を追加する．
         */
-        public function TODO_insert($Todo,$Need_period,$Priority_number){//データベースにinsert
+        public function TODO_insert($Todo,$Need_period,$Priority_number){
             $date=date('Y-m-d H:i:s');
             $sql = "INSERT INTO todo (
                 user_table,user,todo,finish_check,need_period,priority_number,registry_datetime
@@ -55,6 +55,17 @@
                 ':registry_datetime' => $date,
             ];
             $stmt->execute($params);
+        }
+        
+        /*
+            データベースからTODOを検索する．
+        */
+        public function TODO_serch($serch_word,$data){
+            $sql = "SELECT * FROM todo WHERE $serch_word = $data";
+            $stmt = $this->pdo->query($sql);
+            foreach($stmt as $row){
+                echo "TODO:".$row['todo'] . ":" . "必要日数" . $row['finish_check']. "ピリオド<br \>";
+            }
         }
     }
 ?>
