@@ -14,15 +14,19 @@
             $this->dsn=$Dsn;
             $this->user=$User;
             $this->pass=$Pass;
-            $this->pdo=new PDO($this->dsn,$this->user,$this->pass);
+            try{
+                $this->pdo=new PDO($this->dsn,$this->user,$this->pass);
+            }catch(PDOException $e){
+                echo '接続失敗';
+            }
         }
         /*
-            データベースのテーブル追加
+            TODOテーブル作成
         */
         public function TODO_create_table(){
             try{
                 /*
-                    テーブルの内容
+                    TODOテーブル内容
                 */
                 $table_sql = 'CREATE TABLE todo (
                     user_table INT(11),
@@ -42,15 +46,18 @@
                 die;
             }
         }
+
+        /*  
+            ユーザーテーブル作成
+        */
         public function User_create_table(){
             try{
                 $table_sql = 'CREATE TABLE user (
-                    user_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-                    user_table INT(11),
-                    user_name VARCHAR(255),
-                    hash VARCHAR(255),
+                    user_id INT(11) NOT NULL AUTO_INCREMENT primary key,
+                    user_table INT(11)NOT NULL,
+                    user_name VARCHAR(255)NOT NULL,
+                    hash VARCHAR(255) NOT NULL
                 )engine=innodb default charset=utf8';
-                
                 $this->pdo->query($table_sql);
             }
             catch(PDOException $e){
@@ -84,7 +91,7 @@
             ユーザーの作成
         */
         public function User_insert($user_name,$user_table,$hash){
-            $hash = password_hash($user_pass, PASSWORD_BCRYPT);
+            $hash = password_hash($hash,PASSWORD_DEFAULT);
             $sql="INSERT INTO user (
                 user_table,user_name,hash
             ) VALUES (
@@ -99,6 +106,36 @@
             $stmt->execute($params);
             echo 'ユーザーが作成されました．';
         }
+
+        /* 
+            ログイン時に認証
+        */
+        public function CheckUser($user,$pass){
+            $stmt = $this->User_serch('user_name',$user);     
+            if(password_verify($pass,$stmt[0]['hash'])){
+                return True;
+            }
+            else{
+                return False;
+            }
+        }
+        /*
+            データベースからUserを検索
+        */
+        public function User_serch($serch_word,$data){
+            //$sql = "SELECT * FROM user WHERE $serch_word = $data";
+            $sql = "SELECT * FROM user WHERE $serch_word LIKE '$data'";
+            //var_dump($sql);die;
+            $stmt = $this->pdo->query($sql);
+            //var_dump($stmt);die;
+            /*
+            if($stmt==FALSE){
+                return false;
+            }
+            */
+            return $stmt->fetchAll();
+        }
+
         /*
             データベースからTODOを検索する．
         */
@@ -106,7 +143,10 @@
             $sql = "SELECT * FROM todo WHERE $serch_word = $data";
             //var_dump($sql);die;
             $stmt = $this->pdo->query($sql);
-            return $stmt->fetch();
+            if($stmt==FALSE){
+                return false;
+            }
+            return $stmt->fetchAll();
         }
     }
 ?>
