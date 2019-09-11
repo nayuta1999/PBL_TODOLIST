@@ -1,4 +1,7 @@
 <?php
+   /*
+      テスト用に使ってる
+   */
    require_once('TODOLIST/DATABASE.php');
    $test = new DataBase();
    //$test->User_create_table();
