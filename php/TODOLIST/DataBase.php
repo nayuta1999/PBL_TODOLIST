@@ -31,7 +31,8 @@
                 $table_sql = 'CREATE TABLE todo (
                     user_table INT(11),
                     user INT(11),
-                    todo VARCHAR(30),
+                    todo_number INT(11) AUTO_INCREMENT primary key,
+                    todo VARCHAR(255),
                     finish_datetime DATETIME,
                     finish_check INT(11),
                     need_period INT(11),
