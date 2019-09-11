@@ -38,7 +38,6 @@
                     priority_number INT(11),
                     registry_datetime DATETIME
                 )engine=innodb default charset=utf8';
-                
                 $this->pdo->query($table_sql);
             }
             catch(PDOException $e){
@@ -47,7 +46,7 @@
             }
         }
 
-        /*  
+        /*
             ユーザーテーブル作成
         */
         public function User_create_table(){
@@ -107,11 +106,11 @@
             echo 'ユーザーが作成されました．';
         }
 
-        /* 
+        /*
             ログイン時に認証
         */
         public function CheckUser($user,$pass){
-            $stmt = $this->User_serch('user_name',$user);     
+            $stmt = $this->User_serch('user_name',$user);
             if(password_verify($pass,$stmt[0]['hash'])){
                 return $stmt;
             }
